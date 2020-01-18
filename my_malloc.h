@@ -4,9 +4,10 @@
 #include <stdio.h>
 #include <unistd.h> // Library for sbrk()
 typedef struct _LinkList{
-  struct LinkList* currNode;
-  struct LinkList* prevNode;
-  size_t size;
+    struct _LinkList* prevNode;
+    struct _LinkList* nextNode;
+    size_t size;
+    vodi* address;
 }LinkList;
 
 //First Fit malloc/free

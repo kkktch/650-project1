@@ -5,14 +5,41 @@
 
 LinkList* my_memory;
 
-void memory_init(LineList* src){
-  src->currNode = NULL;
-  src->prevNode = NULL;
-  src->size = 0;
+void* divide(LinkList* inLL, size_t size){
+    LinkList* newNode = inLL->address + size;
+    newNode->nextNode = inLL->nextNode;
+    newNode->prevNode = inLL->prevNode;
+    newNode->size = inLL->size - size;
+    newNode->address = newNode;
+    if(inLL->prevNode != NULL){
+        inLL->prevNode->nextNode = newNode;
+    }
+    if(inLL->nextNode != NULL){
+        inLL->nextNode->prevNode = newNode;
+    }
+    inLL->nextNode = NULL;
+    inLL->prevNode = NULL;
+    inLL->size = size;
+    return newNode->address;
 }
 
 void *ff_malloc(size_t size){
-  if(!(my_memory)){
-    memory_init(my_memory);
-  }
+    LinkList* currNode = my_memory;
+    while(currNode){
+        if(currNode->size < size && currNode->size != 0){
+            currNode = currNode->nextNode;
+        }
+        else if(currNode->size >= size){
+            void* ans = divide(currNode, size);
+            return ans;
+        }
+    }
+    if(currNode == NULL){
+        LinkList* newNode = (LinkList*)sbrk(size);;
+        newNode->nextNode = NULL;
+        newNode->prevNode = NULL;
+        newNode->size = size;
+        newNode->address = newNode;
+        return newNode->address;
+    }
 }
