@@ -7,7 +7,7 @@ typedef struct _LinkList{
     struct _LinkList* prevNode;
     struct _LinkList* nextNode;
     size_t size;
-    int isFree;
+  int isFree;
     void* address;
 }LinkList;
 
