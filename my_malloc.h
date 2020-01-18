@@ -7,7 +7,7 @@ typedef struct _LinkList{
     struct _LinkList* prevNode;
     struct _LinkList* nextNode;
     size_t size;
-    vodi* address;
+    void* address;
 }LinkList;
 
 //First Fit malloc/free
