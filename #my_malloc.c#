@@ -26,11 +26,7 @@ void* divide(LinkList* inLL, size_t size){
         inLL->nextNode->prevNode = newNode;
     }
     inLL->nextNode = NULL;
-    inLL->prevNode = NULL;
-    inLL->size = size;
-    inLL->isFree = 0;
-    data_alloc_size += size + sizeof(LinkList);
-    return newNode->address;
+    inLL->prev
 }
 
 void *ff_malloc(size_t size){
