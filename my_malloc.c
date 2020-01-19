@@ -56,125 +56,32 @@ void *ff_malloc(size_t size){
     }
 }
 
-
-void addAndTraverseFromHead(LinkList *block) {
-    LinkList *cur = head;
-    while (cur != NULL && cur->next != NULL &&
-        (unsigned long)cur->next < (unsigned long)block) {
-        cur = cur->next;
+void conquer(LinkList* node){
+    if(node->nextNode && node->nextNode->isFree){
+        node->size += node->nextNode->size + sizeof(LinkList);
+        node->nextNode = node->nextNode->nextNode;
     }
-    assert(cur->next != NULL);
-    LinkList *tempNext = cur->next;
-    tempNext->prev = block;
-    cur->next = block;
-    block->next = tempNext;
-    block->prev = cur;
-}
-
-void addAndTraverseFromTail(LinkList *block) {
-    LinkList *cur = tail;
-    while (cur != NULL && cur->prev != NULL &&
-        (unsigned long)cur->prev > (unsigned long)block) {
-        cur = cur->prev;
-    }
-    assert(cur->prev != NULL);
-    LinkList *tempPrev = cur->prev;
-    tempPrev->next = block;
-    cur->prev = block;
-    block->next = cur;
-    block->prev = tempPrev;
-}
-void add(LinkList *block) {
-    if (head == NULL && tail == NULL) {
-        head = block;
-        tail = block;
-    }
-    else if ((unsigned long)head > (unsigned long)block) {
-        head->prev = block;
-        block->next = head;
-        block->prev = NULL;
-        head = block;
-    }
-    else if ((unsigned long)tail < (unsigned long)block) {
-        tail->next = block;
-        block->prev = tail;
-        block->next = NULL;
-        tail = block;
-    }
-    else {
-        unsigned long distToHead = (unsigned long)block - (unsigned long)head;
-        unsigned long distToTail = (unsigned long)tail - (unsigned long)block;
-        if (distToHead < distToTail) {
-            addAndTraverseFromHead(block);
-        }
-        else {
-            addAndTraverseFromTail(block);
-        }
-    }
-}
-void merge(LinkList *cur) {
-    if (cur->prev != NULL) {
-        LinkList *prevBlock = cur->prev;
-        if (prevBlock->address + prevBlock->size == (char *)cur) {
-            prevBlock->size += cur->size + sizeof(LinkList);
-            prevBlock->next = cur->next;
-            if (cur == tail) {
-                tail = prevBlock;
-            }
-            else { // cur->next != NULL
-                cur->next->prev = prevBlock;
-            }
-            cur = prevBlock;
-        }
-    }
-    if (cur->next != NULL && cur->address + cur->size == (char *)cur->next) {
-        cur->size += cur->next->size + sizeof(LinkList);
-        if (cur->next == tail) {
-            cur->next = NULL;
-            tail = cur;
-        }
-        else {
-            cur->next = cur->next->next;
-            cur->next->prev = cur;
-        }
+    if(node->prevNode && node->prevNode->isFree){
+        node->size += node->prevNode->size + sizeof(LinkList);
+        node->prevNode = node->prevNode->prevNode;
     }
 }
 
-void ff_free(void *ptr) {
-    LinkList *block = (LinkList *)((char *)ptr - sizeof(LinkList));
-    data_alloc_size -= block->size + sizeof(LinkList);
-    add(block);
-    merge(block);
+void ff_free(void *ptr){
+    LinkList* currNode = (LinkList*)(ptr - sizeof(LinkList));
+    data_alloc_size -= currNode->size + sizeof(LinkList);
+    LinkList* backNode = currNode;
+    while(currNode->nextNode){
+        conquer(currNode);
+        currNode = currNode->nextNode;
+    }
+    currNode = backNode;
+    while (currNode->prevNode) {
+        conquer(currNode);
+        currNode = currNode->prevNode;
+    }
+    currNode->isFree = 1;
 }
-
-
-
-//void conquer(LinkList* node){
-//    if(node->nextNode && node->nextNode->isFree){
-//        node->size += node->nextNode->size + sizeof(LinkList);
-//        node->nextNode = node->nextNode->nextNode;
-//    }
-//    if(node->prevNode && node->prevNode->isFree){
-//        node->size += node->prevNode->size + sizeof(LinkList);
-//        node->prevNode = node->prevNode->prevNode;
-//    }
-//}
-//
-//void ff_free(void *ptr){
-//    LinkList* currNode = (LinkList*)(ptr - sizeof(LinkList));
-//    data_alloc_size -= currNode->size + sizeof(LinkList);
-//    LinkList* backNode = currNode;
-//    while(currNode->nextNode){
-//        conquer(currNode);
-//        currNode = currNode->nextNode;
-//    }
-//    currNode = backNode;
-//    while (currNode->prevNode) {
-//        conquer(currNode);
-//        currNode = currNode->prevNode;
-//    }
-//    currNode->isFree = 1;
-//}
 
 void *bf_malloc(size_t size){
     LinkList* minNode = NULL;
