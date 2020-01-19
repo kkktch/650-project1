@@ -67,8 +67,15 @@ void conquer(LinkList* node){
 void ff_free(void *ptr){
     LinkList* currNode = (LinkList*)(ptr - sizeof(LinkList));
     currNode->isFree = 1;
-    while(currNode->nextNode || currNode->prevNode){
+    LinkList* backNode = currNode;
+    while(currNode->nextNode){
         conquer(currNode);
+        currNode = currNode->nextNode;
+    }
+    currNode = backNode;
+    while (currNode->prevNode) {
+        conquer(currNode);
+        currNode = currNode->prevNode;
     }
 }
 
