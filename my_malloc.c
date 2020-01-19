@@ -56,25 +56,20 @@ void *ff_malloc(size_t size){
     }
 }
 
-void conquer(LinkList* node){
-    if(node->nextNode && node->nextNode->isFree){
-        node->size += node->nextNode->size + sizeof(LinkList);
-        node->nextNode = node->nextNode->nextNode;
+void conquer(){
+    LinkList* currNode = my_memory;
+    if(currNode->nextNode && currNode->nextNode->isFree){
+        currNode->size += currNode->nextNode->size + sizeof(LinkList);
+        currNode->nextNode = node->nextNode->nextNode;
         conquer(node->nextNode);
-    }
-    if(node->prevNode && node->prevNode->isFree){
-        node->size += node->prevNode->size + sizeof(LinkList);
-        node->prevNode = node->prevNode->prevNode;
-        conquer(node->prevNode);
     }
 }
 
 void ff_free(void *ptr){
-    LinkList* currNode = (LinkList*)(ptr - sizeof(LinkList));
+    conquer();
+    LinkList* currNode = (LinkList*)(ptr - 1);
     currNode->isFree = 1;
     data_alloc_size -= currNode->size + sizeof(LinkList);
-    LinkList* backNode = currNode;
-    conquer(currNode);
 }
 
 void *bf_malloc(size_t size){
