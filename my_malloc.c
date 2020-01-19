@@ -12,7 +12,7 @@ void* divide(LinkList* inLL, size_t size){
     LinkList* newNode = inLL->address + size;
     newNode->nextNode = inLL->nextNode;
     newNode->prevNode = inLL->prevNode;
-    newNode->size = inLL->size - （size + sizeof(LinkList));
+    newNode->size = inLL->size - (size + sizeof(LinkList));
     newNode->address = newNode;
     newNode->isFree = 1;
     if(inLL->prevNode != NULL){
@@ -85,7 +85,7 @@ void ff_free(void *ptr){
 
 void *bf_malloc(size_t size){
     LinkList* minNode = NULL;
-    size_t minSize = SIZE_MAX;
+    size_t minSize = __SIZE_MAX__;
     LinkList* currNode = my_memory;
     while(currNode){
         if(currNode->size >= size + sizeof(LinkList) && currNode->size < minSize){
