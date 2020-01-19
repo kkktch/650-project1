@@ -3,21 +3,21 @@
 #include <unistd.h> // Library for sbrk()
 #include "my_malloc.h" // my malloc header file
 
-LinkList* my_memory = NULL;
-unsigned long data_segment_size = 0;
-unsigned long data_alloc_size = 0;
+static LinkList* my_memory = NULL;
+static unsigned long data_segment_size = 0;
+static unsigned long data_alloc_size = 0;
 
 void* divide(LinkList* inLL, size_t size){
-    LinkList* newNode = inLL->address + size;
+    LinkList* newNode = (LinkList*)(inLL->address + size);
     newNode->nextNode = inLL->nextNode;
     newNode->prevNode = inLL->prevNode;
     newNode->size = inLL->size - (size + sizeof(LinkList));
     newNode->address = (void*)(newNode + 1);
     newNode->isFree = 1;
-    if(inLL->prevNode != NULL){
+    if(inLL->prevNode != NULL ){
         inLL->prevNode->nextNode = newNode;
     }
-    else if(inLL->prevNode == NULL){
+    else if(inLL == my_memory){
         my_memory = newNode;
     }
     if(inLL->nextNode != NULL){
@@ -60,7 +60,7 @@ void conquer(){
     LinkList* currNode = my_memory;
     if(currNode->nextNode && currNode->nextNode->isFree){
         currNode->size += currNode->nextNode->size + sizeof(LinkList);
-        currNode->nextNode = node->nextNode->nextNode;
+        currNode->nextNode = currNode->nextNode->nextNode;
         conquer(node->nextNode);
     }
 }
