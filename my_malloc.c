@@ -57,34 +57,34 @@ void *ff_malloc(size_t size){
 }
 
 
-void addAndTraverseFromHead(meta *block) {
-    meta *cur = head;
+void addAndTraverseFromHead(LinkList *block) {
+    LinkList *cur = head;
     while (cur != NULL && cur->next != NULL &&
         (unsigned long)cur->next < (unsigned long)block) {
         cur = cur->next;
     }
     assert(cur->next != NULL);
-    meta *tempNext = cur->next;
+    LinkList *tempNext = cur->next;
     tempNext->prev = block;
     cur->next = block;
     block->next = tempNext;
     block->prev = cur;
 }
 
-void addAndTraverseFromTail(meta *block) {
-    meta *cur = tail;
+void addAndTraverseFromTail(LinkList *block) {
+    LinkList *cur = tail;
     while (cur != NULL && cur->prev != NULL &&
         (unsigned long)cur->prev > (unsigned long)block) {
         cur = cur->prev;
     }
     assert(cur->prev != NULL);
-    meta *tempPrev = cur->prev;
+    LinkList *tempPrev = cur->prev;
     tempPrev->next = block;
     cur->prev = block;
     block->next = cur;
     block->prev = tempPrev;
 }
-void add(meta *block) {
+void add(LinkList *block) {
     if (head == NULL && tail == NULL) {
         head = block;
         tail = block;
@@ -112,11 +112,11 @@ void add(meta *block) {
         }
     }
 }
-void merge(meta *cur) {
+void merge(LinkList *cur) {
     if (cur->prev != NULL) {
-        meta *prevBlock = cur->prev;
+        LinkList *prevBlock = cur->prev;
         if (prevBlock->address + prevBlock->size == (char *)cur) {
-            prevBlock->size += cur->size + sizeof(meta);
+            prevBlock->size += cur->size + sizeof(LinkList);
             prevBlock->next = cur->next;
             if (cur == tail) {
                 tail = prevBlock;
@@ -128,7 +128,7 @@ void merge(meta *cur) {
         }
     }
     if (cur->next != NULL && cur->address + cur->size == (char *)cur->next) {
-        cur->size += cur->next->size + sizeof(meta);
+        cur->size += cur->next->size + sizeof(LinkList);
         if (cur->next == tail) {
             cur->next = NULL;
             tail = cur;
@@ -141,8 +141,8 @@ void merge(meta *cur) {
 }
 
 void ff_free(void *ptr) {
-    meta *block = (meta *)((char *)ptr - sizeof(meta));
-    allocated -= block->size + sizeof(meta);
+    LinkList *block = (LinkList *)((char *)ptr - sizeof(LinkList));
+    data_alloc_size -= block->size + sizeof(LinkList);
     add(block);
     merge(block);
 }
@@ -206,7 +206,7 @@ void *bf_malloc(size_t size){
 }
 
 void bf_free(void *ptr){
-    
+    ff_free(ptr);
 }
 
 unsigned long get_data_segment_size(){
