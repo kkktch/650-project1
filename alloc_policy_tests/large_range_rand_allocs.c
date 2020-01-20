@@ -96,6 +96,7 @@ int main(int argc, char *argv[])
   data_segment_free_space = get_data_segment_free_space_size();
 
   double elapsed_ns = calc_time(start_time, end_time);
+  printf("data_segment_size = %lu, data_segment_free_space = %lu\n", data_segment_size, data_segment_free_space);
   printf("Execution Time = %f seconds\n", elapsed_ns / 1e9);
   printf("Fragmentation  = %f\n", (float)data_segment_free_space/(float)data_segment_size);
 

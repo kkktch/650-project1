@@ -60,6 +60,7 @@ void *ff_malloc(size_t size){
     data_alloc_size += size + sizeof(LinkList);
     newNode->nextNode = NULL;
     newNode->prevNode = currNode;
+    //    currNode->nextNode = newNode;
     newNode->size = size;
     newNode->address = (char*)(temp + sizeof(LinkList));
     newNode->isFree = 0;
@@ -126,4 +127,4 @@ unsigned long get_data_segment_size(){
 
 unsigned long get_data_segment_free_space_size(){
   return (data_segment_size - data_alloc_size);
-} //in bytes
+}
