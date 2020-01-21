@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 
   //Stop Time
   clock_gettime(CLOCK_MONOTONIC, &end_time);
-
+  
   data_segment_size = get_data_segment_size();
   data_segment_free_space = get_data_segment_free_space_size();
   printf("data_segment_size = %lu, data_segment_free_space = %lu\n", data_segment_size, data_segment_free_space);
@@ -103,6 +103,6 @@ int main(int argc, char *argv[])
   for (i=0; i < NUM_ITEMS; i++) {
     FREE(malloc_items[0][i].address);
   } //for i
-
+  
   return 0;
 }

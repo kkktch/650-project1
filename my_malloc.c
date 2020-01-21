@@ -18,6 +18,7 @@ void addNode(LinkList* Node);
 void conquer(LinkList* currNode);
 void conquerPrev(LinkList* currNode);
 void conquerNext(LinkList* currNode);
+int countNum();
 
 void* ff_malloc(size_t size) {
     LinkList *currNode = HeadNode; // Start find appropriate node to allocate memory
@@ -68,9 +69,8 @@ void* bf_malloc(size_t size) {
         if (currNode->size > size && currNode->size < minSize) {
             minSize = currNode->size;
             minNode = currNode;
-            printf("%l", minNode);
         }
-        else if (currNode->size == size) {
+        else if (currNode->size == size){
             minNode = currNode;
             break;
         }
@@ -262,4 +262,14 @@ void conquer(LinkList* currNode) {
     if (currNode != TailNode && currNode->size == (void*)currNode->nextNode - currNode->address && currNode->isFree == 1) {
         conquerNext(currNode);
     }
+}
+
+int countNum(){
+    int ans = 0;
+    LinkList* currNode = HeadNode;
+    while (currNode) {
+        ++ans;
+        currNode = currNode->nextNode;
+    }
+    return ans;
 }
