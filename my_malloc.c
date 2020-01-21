@@ -171,13 +171,13 @@ void Traverse(LinkList* Node, int type){
     LinkList* currNode = NULL;
     if (type > 0) {
         currNode = HeadNode;
-        while (currNode != TailNode && currNode->nextNode < Node) {
+        while (currNode != TailNode && currNode->nextNode->address < Node->address) {
             currNode = currNode->nextNode;
         }
     }
     else {
         currNode = TailNode;
-        while (currNode != HeadNode && currNode->prevNode > Node) {
+        while (currNode != HeadNode && currNode->prevNode->address > Node->address) {
             currNode = currNode->prevNode;
         }
     }
@@ -210,7 +210,7 @@ void insertNode(LinkList* Node, int type){
         TailNode = Node;
     }
     if (type == 3) {
-        int distance = (int)HeadNode + (int)TailNode - 2 * (int)Node;
+        int distance = (int)HeadNode->address + (int)TailNode->address - 2 * (int)Node->address;
         Traverse(Node, distance);
     }
 }
@@ -221,7 +221,7 @@ void addNode(LinkList *Node) {
         TailNode = Node;
         return;
     }
-    int type = (HeadNode > Node) ? 1 : (TailNode < Node) ? 2 : 3;
+    int type = (HeadNode->address > Node->address) ? 1 : (TailNode->address < Node->address) ? 2 : 3;
     insertNode(Node, type);
 }
 
