@@ -8,7 +8,7 @@ typedef struct _LinkList{
     struct _LinkList* nextNode;
     size_t size;
     int isFree;
-    char* address;
+    void* address;
 }LinkList;
 
 //First Fit malloc/free
