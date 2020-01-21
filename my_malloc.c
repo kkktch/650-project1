@@ -37,9 +37,10 @@ void* divide(LinkList* inLL, size_t size){
 
 void *ff_malloc(size_t size){
     LinkList* currNode = my_memory_head;
-    while(currNode){
+    while(currNode != NULL){
         if(currNode->size < size){
             currNode = currNode->nextNode;
+            continue;
         }
         else if(currNode->size >= size + sizeof(LinkList)){
             void* ans = divide(currNode, size);
@@ -141,7 +142,7 @@ void conquer(LinkList* currNode){
             currNode->nextNode->prevNode = currNode;
         }
     }
-    if (currNode->prevNode && (long)currNode->prevNode->size == (long)currNode - (long)currNode->prevNode->address) {
+    if (currNode->prevNode && currNode->prevNode->size == (char*)currNode - currNode->prevNode->address) {
         currNode->prevNode->size += currNode->size + sizeof(LinkList);
         currNode->prevNode->nextNode = currNode->nextNode;
         if (my_memory_tail == currNode) {
