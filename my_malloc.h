@@ -11,8 +11,6 @@ typedef struct _LinkList{
     void* address;
 }LinkList;
 
-int countNum();
-
 //First Fit malloc/free
 void *ff_malloc(size_t size);
 void ff_free(void *ptr);

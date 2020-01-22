@@ -18,7 +18,6 @@ void addNode(LinkList* Node);
 void conquer(LinkList* currNode);
 void conquerPrev(LinkList* currNode);
 void conquerNext(LinkList* currNode);
-int countNum();
 
 void* ff_malloc(size_t size) {
     LinkList *currNode = HeadNode; // Start find appropriate node to allocate memory
@@ -210,8 +209,7 @@ void insertNode(LinkList* Node, int type){
         TailNode = Node;
     }
     if (type == 3) {
-        int distance = (int)HeadNode->address + (int)TailNode->address - 2 * (int)Node->address;
-        Traverse(Node, distance);
+        Traverse(Node, 1);
     }
 }
 
@@ -262,14 +260,4 @@ void conquer(LinkList* currNode) {
     if (currNode != TailNode && currNode->size == (void*)currNode->nextNode - currNode->address && currNode->isFree == 1) {
         conquerNext(currNode);
     }
-}
-
-int countNum(){
-    int ans = 0;
-    LinkList* currNode = HeadNode;
-    while (currNode) {
-        ++ans;
-        currNode = currNode->nextNode;
-    }
-    return ans;
 }
