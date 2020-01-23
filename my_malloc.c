@@ -3,8 +3,8 @@
 #include <limits.h>
 #include <unistd.h>
 
-static LinkList *HeadNode = NULL;
-static LinkList *TailNode = NULL;
+static LinkList* HeadNode = NULL;
+static LinkList* TailNode = NULL;
 static unsigned long data_segment_size = 0;
 static unsigned long data_segment_free_space_size = 0;
 static size_t LLSIZE = sizeof(LinkList);
@@ -20,7 +20,7 @@ void conquerPrev(LinkList* currNode);
 void conquerNext(LinkList* currNode);
 
 void* ff_malloc(size_t size) {
-    LinkList *currNode = HeadNode; // Start find appropriate node to allocate memory
+    LinkList* currNode = HeadNode; // Start find appropriate node to allocate memory
     while (currNode != NULL) {
         if (currNode->size < size) {
             // No enough space, move to next node
@@ -40,8 +40,8 @@ void* ff_malloc(size_t size) {
         }
     }
     if (currNode == NULL) { // There is no appropriate space, use sbrk() to allocate new space
-        void *tmp = sbrk(size + LLSIZE);
-        LinkList *Node = tmp;
+        void* tmp = sbrk(size + LLSIZE);
+        LinkList* Node = tmp;
         data_segment_size += size + LLSIZE;
         eraseNode(Node);
         Node->size = size;
@@ -50,9 +50,9 @@ void* ff_malloc(size_t size) {
     }
 }
 
-void ff_free(void *ptr) {
+void ff_free(void* ptr) {
     // Get current node
-    LinkList *currNode = ptr - LLSIZE;
+    LinkList* currNode = ptr - LLSIZE;
     currNode->isFree = 1;
     data_segment_free_space_size += currNode->size + LLSIZE;
     // Insert the free node to memory and conquer adjacent free space
@@ -62,8 +62,8 @@ void ff_free(void *ptr) {
 void* bf_malloc(size_t size) {
     // Use while loop to find the best space
     size_t minSize = __SIZE_MAX__;
-    LinkList *currNode = HeadNode;
-    LinkList *minNode = NULL;
+    LinkList* currNode = HeadNode;
+    LinkList* minNode = NULL;
     while (currNode) {
         if (currNode->size > size && currNode->size < minSize) {
             minSize = currNode->size;
@@ -77,9 +77,9 @@ void* bf_malloc(size_t size) {
     }
     // If there is no such space, allocate a new node
     if (minNode == NULL) {
-        void *tmp = sbrk(size + LLSIZE);
+        void* tmp = sbrk(size + LLSIZE);
         data_segment_size += size + LLSIZE;
-        LinkList *Node = tmp;
+        LinkList* Node = tmp;
         eraseNode(Node);
         Node->size = size;
         Node->address = tmp + LLSIZE;
@@ -97,9 +97,9 @@ void* bf_malloc(size_t size) {
     }
 }
 
-void bf_free(void *ptr) {
+void bf_free(void* ptr) {
     // The same as ff_free()
-    LinkList *currNode = ptr - LLSIZE;
+    LinkList* currNode = ptr - LLSIZE;
     currNode->isFree = 1;
     data_segment_free_space_size += currNode->size + LLSIZE;
     conquer(currNode);
@@ -145,7 +145,7 @@ void* deleteNode(LinkList* currNode){
 
 void* divide(LinkList* currNode, size_t size){
     // Divive a new node
-    LinkList *newNode = currNode->address + size;
+    LinkList* newNode = currNode->address + size;
     data_segment_free_space_size -= size + LLSIZE;
     newNode->nextNode = currNode->nextNode;
     newNode->prevNode = currNode->prevNode;
@@ -180,8 +180,8 @@ void Traverse(LinkList* Node, int type){
             currNode = currNode->prevNode;
         }
     }
-    LinkList *tempNext = currNode->nextNode;
-    LinkList *tempPrev = currNode->prevNode;
+    LinkList* tempNext = currNode->nextNode;
+    LinkList* tempPrev = currNode->prevNode;
     if (type > 0) {
         tempNext->prevNode = Node;
         currNode->nextNode = Node;
@@ -213,7 +213,7 @@ void insertNode(LinkList* Node, int type){
     }
 }
 
-void addNode(LinkList *Node) {
+void addNode(LinkList* Node) {
     if (HeadNode == NULL && TailNode == NULL) {
         HeadNode = Node;
         TailNode = Node;
